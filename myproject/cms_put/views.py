@@ -12,7 +12,11 @@ def processCmsRequests(request, resource):
         except Page.DoesNotExist:
             return HttpResponseNotFound("Page not found")
     elif request.method == 'PUT':
-        newPage = Page(name = resource, page = request.body)
+        try:
+            newPage = Page.objects.get(name=resource)
+            newPage.page = request.body
+        except Page.DoesNotExist:
+            newPage = Page(name = resource, page = request.body)
         newPage.save()
         return HttpResponse("Added to the list")
     else:
